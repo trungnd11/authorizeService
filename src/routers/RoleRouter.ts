@@ -1,8 +1,8 @@
 import express from "express";
-import { findRoleByName } from "../controllers/RoleController";
+import RoleController from "../controllers/RoleController";
 
 const role = express.Router();
 
-role.get("/find-role-by-name", findRoleByName);
+role.get("/find-role-by-name", RoleController.findRoleByName);
 
 export default role;
