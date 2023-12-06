@@ -9,6 +9,7 @@ export default class AuthService {
       const { username, password } = user;
       const currentUser = await UserService.findOneUser(username);
       if (!currentUser || !(await currentUser.isPasswordCorrect(password))) {
+        throw new Error(`Password is invailid`);
       }
       const rolesId = currentUser.roles;
       const roles = (await RoleService.findRoleById(rolesId)).map(role => `ROLE_${role.name.toUpperCase()}`);
