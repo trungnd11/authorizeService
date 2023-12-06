@@ -2,6 +2,7 @@ import express from "express";
 import BaseController from "./controllers/BaseController";
 import mongoose from "mongoose";
 import config from "./config";
+import errorMiddleware from "./middlewares/errorMiddleware";
 
 export default class App {
   private app: express.Application;
@@ -15,14 +16,14 @@ export default class App {
     this.connectDB();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
+    this.initializeErrorHandling();
   }
 
   private connectDB() {
     try {
       mongoose.set("strictQuery", false);
-      mongoose.connect(
-        this.mongoAtlasUri, { },
-        () => console.log("Mongoose is connected")
+      mongoose.connect(this.mongoAtlasUri, {}, () =>
+        console.log("Mongoose is connected")
       );
     } catch (e) {
       console.log("could not connect", e);
@@ -32,6 +33,10 @@ export default class App {
 
   private initializeMiddlewares() {
     this.app.use(express.json());
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
   }
 
   private initializeControllers(controllers: BaseController[]) {
