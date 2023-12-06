@@ -1,4 +1,4 @@
-export default class RoleEnum {
-  ADMIN = "ADMIN"
+export enum RoleNameEnum {
+  ADMIN = "ADMIN",
   CUSTOMER = "CUSTOMER"
 }
