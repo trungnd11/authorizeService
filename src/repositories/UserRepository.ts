@@ -1,4 +1,5 @@
-import { IUser, UserModel } from "../models/User";
+import { Pagination } from "mongoose-paginate-ts";
+import { IUser, UserModel, UserPageModel } from "../models/User";
 
 export default class UserRepository {
   public static async createUser(user: IUser) {
@@ -7,7 +8,7 @@ export default class UserRepository {
       const createdUser = await newUser.save();
       return createdUser;
     } catch (error) {
-      throw new Error(`Lỗi khi tạo mới tài khoản: ${error}`);
+      throw error;
     }
   }
 
@@ -16,7 +17,16 @@ export default class UserRepository {
       const user = await UserModel.findOne({ username: username }).populate("roles").exec();
       return user;
     } catch (error) {
-      throw new Error(`Not found: ${error}`);
+      throw error;
+    }
+  }
+
+  public static async findAllPage() {
+    try {
+      const pageUser = await UserPageModel.paginate({});
+      return pageUser;
+    } catch (error) {
+      throw error;
     }
   }
 }

@@ -3,6 +3,7 @@ import BaseController from "./BaseController";
 import { LoginRequest } from "../dto/request/LoginRequest";
 import AuthService from "../services/AuthService";
 import HttpException from "../dto/exception/HttpException";
+import { HttpCodeEnum } from "../enum/HttpCodeEnum";
 
 export default class AuthController extends BaseController {
   private pathLogin = "/login";
@@ -20,7 +21,7 @@ export default class AuthController extends BaseController {
       const response = await AuthService.login(req.body);
       return res.status(200).json(response);
     } catch (error) {
-      next(new HttpException(400, "Lỗi"));
+      next(error);
     }
   }
 }

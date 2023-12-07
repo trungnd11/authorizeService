@@ -1,4 +1,5 @@
 import mongoose, { Types, Document, Model } from "mongoose";
+import { mongoosePagination, Pagination } from "mongoose-paginate-ts";
 import { removeFields } from "../utils/ModelsUtils";
 import DateUtils from "../utils/DateUtils";
 import { compareBcryt, enCodeBcryt } from "../utils/helpper/bcrypt";
@@ -24,7 +25,7 @@ const UserSchema = new Schema<IUser>(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, "Tên đăng nhập là bắt buộc"],
       unique: true,
       trim: true,
       minlength: [5, "Tên đăng nhập phải từ 6 ký tự"],
@@ -42,7 +43,7 @@ const UserSchema = new Schema<IUser>(
     email: {
       type: String,
       unique: true,
-      required: true,
+      required: [true, "Email là bắt buộc"],
       trim: true
     },
     password: {
@@ -59,6 +60,8 @@ const UserSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
+UserSchema.plugin(mongoosePagination);
 
 UserSchema.set("toJSON", {
   getters: true,
@@ -84,3 +87,4 @@ UserSchema.path("createdAt").get((createdAt: Date) => DateUtils.formatDateToStri
 UserSchema.path("updatedAt").get((updatedAt: Date) => DateUtils.formatDateToString(updatedAt));
 
 export const UserModel = mongoose.model<UserDocument, UserModelInterface>("user", UserSchema);
+export const UserPageModel = mongoose.model<UserDocument, Pagination<UserModelInterface>>("user", UserSchema);

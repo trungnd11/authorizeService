@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express from "express";
 import BaseController from "./controllers/BaseController";
 import mongoose from "mongoose";
