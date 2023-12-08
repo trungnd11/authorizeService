@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import express from "express";
+import cors from "cors";
 import BaseController from "./controllers/BaseController";
 import mongoose from "mongoose";
 import config from "./config";
 import errorMiddleware from "./middlewares/errorMiddleware";
-import { corsMiddleware } from "./middlewares/corsMiddleware";
 
 export default class App {
   private app: express.Application;
@@ -34,7 +34,7 @@ export default class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(corsMiddleware);
+    this.app.use(cors());
     this.app.use(express.json());
   }
 
