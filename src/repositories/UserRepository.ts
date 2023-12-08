@@ -1,5 +1,7 @@
-import { Pagination } from "mongoose-paginate-ts";
+import { PaginationOptions } from "mongoose-paginate-ts";
 import { IUser, UserModel, UserPageModel } from "../models/User";
+import SearchUserRequest from "../dto/request/search/SearchUserRequest";
+import PageOptionRequest from "../dto/request/PageOptionRequest";
 
 export default class UserRepository {
   public static async createUser(user: IUser) {
@@ -21,9 +23,17 @@ export default class UserRepository {
     }
   }
 
-  public static async findAllPage() {
+  public static async findAllPage(searchUser: SearchUserRequest, page: PageOptionRequest) {
     try {
-      const pageUser = await UserPageModel.paginate({});
+      const optionPage: PaginationOptions = {
+        populate: "roles",
+        ...page,
+        query: {
+          ...(searchUser.username ? { username: searchUser.username } : {}),
+          ...(searchUser.email ? { email: searchUser.email } : {}),
+        }
+      }
+      const pageUser = await UserPageModel.paginate(optionPage);
       return pageUser;
     } catch (error) {
       throw error;

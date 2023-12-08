@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from "class-validator"
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class UserRequest {
   @IsNotEmpty({ message: "Tên đăng nhập không để trống" })

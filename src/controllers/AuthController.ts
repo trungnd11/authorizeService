@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import BaseController from "./BaseController";
 import { LoginRequest } from "../dto/request/LoginRequest";
 import AuthService from "../services/AuthService";
-import HttpException from "../dto/exception/HttpException";
-import { HttpCodeEnum } from "../enum/HttpCodeEnum";
+import ResponseEntity from "../dto/response/ResponseEntity";
+import LoginResponse from "../dto/response/login/LoginResponse";
 
 export default class AuthController extends BaseController {
   private pathLogin = "/login";
@@ -18,8 +18,8 @@ export default class AuthController extends BaseController {
 
   async login(req: Request<never, never, LoginRequest, never>, res: Response, next: NextFunction) {
     try {
-      const response = await AuthService.login(req.body);
-      return res.status(200).json(response);
+      const responseJwt = await AuthService.login(req.body);
+      return ResponseEntity.success<LoginResponse>(res, responseJwt);
     } catch (error) {
       next(error);
     }

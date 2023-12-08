@@ -9,6 +9,10 @@ import { validate } from "class-validator";
 import ArrayUtils from "../utils/ArrayUtils";
 import HttpException from "../dto/exception/HttpException";
 import { HttpCodeEnum } from "../enum/HttpCodeEnum";
+import PageResponse from "../dto/response/page/PageResponse";
+import UserResponseDto from "../dto/response/user/UserResponseDto";
+import SearchUserRequest from "../dto/request/search/SearchUserRequest";
+import PageOptionRequest from "../dto/request/PageOptionRequest";
 
 export default class UserService {
   public static async createUser(user: UserRequest) {
@@ -36,10 +40,18 @@ export default class UserService {
     return user
   }
 
-  public static async findAllPage() {
+  public static async findAllPage(searchUser: SearchUserRequest, page: PageOptionRequest) {
     try {
-      const pageUser = await UserRepository.findAllPage();
-      return pageUser;
+      const pageUser = await UserRepository.findAllPage(searchUser, page);
+      const listUser = pageUser?.docs.map(user => plainToClass(UserResponseDto, user,
+        { excludeExtraneousValues: true, enableImplicitConversion: true })) ?? [];
+      const totalDocs = pageUser?.totalDocs ?? 0;
+      const totalPages = pageUser?.totalPages ?? 0;
+      const buildPagesUser: PageResponse<unknown> = {
+        doc: listUser,
+        totalDocs, totalPages
+      }
+      return buildPagesUser;
     } catch (error) {
       throw error;
     }

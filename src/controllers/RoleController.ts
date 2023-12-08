@@ -1,8 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import BaseController from "./BaseController";
 import RoleService from "../services/RoleService";
 import { RoleNameEnum } from "../enum/RoleEnum";
 import { IRole } from "../models/Role";
+import ResponseEntity from "../dto/response/ResponseEntity";
+import { verifyTokenAndRole } from "../middlewares/jwtMiddleware";
 
 export default class RoleController extends BaseController {
   private path = "/role"
@@ -13,25 +15,27 @@ export default class RoleController extends BaseController {
   }
 
   initializeRoutes(): void {
-    this.router.get(`${this.path}/find-by-name`, this.findRoleByName);
-    this.router.post(`${this.path}/create`, this.createRole);
+    this.router.get(`${this.path}/find-by-name`, verifyTokenAndRole("ADMIN"), this.findRoleByName);
+    this.router.post(`${this.path}/create`, verifyTokenAndRole("ADMIN"), this.createRole);
   }
 
-  async findRoleByName(req: Request, res: Response) {
+  async findRoleByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const role = await RoleService.findRoleByName([RoleNameEnum.ADMIN]);
-      return res.status(200).json(role);
+      const rolesName = req.body.roles
+      const role = await RoleService.findRoleByName(rolesName);
+      return ResponseEntity.success(res, role);
     } catch (error) {
+      next(error);
     }
   };
 
-  async createRole(req: Request<never, never, IRole, never>, res: Response) {
+  async createRole(req: Request<never, never, IRole, never>, res: Response, next:  NextFunction) {
     const role = req.body;
     try {
       const newRole = await RoleService.createRole(role);
-      return res.status(200).json(newRole);
+      return ResponseEntity.success(res, newRole);
     } catch (error) {
-      return res.status(400).json({ err: error });
+      next(error);
     }
   };
 }

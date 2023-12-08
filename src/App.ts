@@ -41,7 +41,7 @@ export default class App {
   }
 
   private initializeControllers(controllers: BaseController[]) {
-    this.app.get("/", (request, response) => {
+    this.app.get("/", (_request, response) => {
       response.send("Application is running");
     });
     controllers.forEach((controller) => {
