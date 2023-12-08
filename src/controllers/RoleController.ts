@@ -21,7 +21,7 @@ export default class RoleController extends BaseController {
 
   async findRoleByName(req: Request, res: Response, next: NextFunction) {
     try {
-      const rolesName = req.body.roles
+      const rolesName = req.body.roles;
       const role = await RoleService.findRoleByName(rolesName);
       return ResponseEntity.success(res, role);
     } catch (error) {
