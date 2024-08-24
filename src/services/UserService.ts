@@ -37,7 +37,7 @@ export default class UserService {
   public static async findOneUser(username: string) {
     const user = await UserRepository.findOneUser(username);
     if (ObjectUtils.isEmpty(user)) throw new HttpException(HttpCodeEnum.NOT_FOUND, "Không tìm thấy user");
-    return user
+    return user;
   }
 
   public static async findAllPage(searchUser: SearchUserRequest, page: PageOptionRequest) {

@@ -16,6 +16,7 @@ export default class UserController extends BaseController {
   public initializeRoutes(): void {
     this.router.post(`${this.path}/create`, verifyTokenAndRole("ADMIN") , this.createUser);
     this.router.post(`${this.path}/list`, verifyTokenAndRole("ADMIN"), this.getListPageUser);
+    this.router.post(`${this.path}/find-user`, verifyTokenAndRole("ADMIN"), this.findUser);
   }
   
   private async getListPageUser(req: Request, res: Response, next: NextFunction) {
@@ -35,6 +36,15 @@ export default class UserController extends BaseController {
     try {
       const newUser = await UserService.createUser(req.body);
       return ResponseEntity.success(res, newUser);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  private async findUser(req: Request<never, never, UserRequest, never>, res: Response, next: NextFunction) {
+    try {
+      const user = await UserService.findOneUser(req.body.username);
+      return ResponseEntity.success(res, user);
     } catch (error) {
       next(error);
     }
